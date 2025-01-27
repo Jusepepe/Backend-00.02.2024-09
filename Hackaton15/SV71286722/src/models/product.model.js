@@ -8,6 +8,23 @@ export class ProductModel extends Model {
         return products
     }
 
+    static async getProductbyID(id){
+        const product = await ProductModel.findByPk(id);
+        return product
+    }
+
+    static async getProductsbyID(ids, quantity){
+        const product = await ProductModel.findAll({
+            where: {
+                id:  ids,
+                stock: {
+                    [Op.gte] : quantity
+                }
+            }
+        });
+        return product
+    }
+
     static async createProduct(){
         const product = await ProductModel.create();
         return product

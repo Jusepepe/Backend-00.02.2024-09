@@ -2,6 +2,7 @@ import { MessageModel } from "./message.model.js";
 import { UserModel } from "./user.model.js";
 import { ProductModel } from "./product.model.js";
 import { PackageModel } from "./package.model.js";
+import { OrderModel } from "./order.model.js";
 import { sequelize as db } from "../config/dbconfig.js";
 
 UserModel.hasMany(MessageModel, {
@@ -18,11 +19,11 @@ PackageModel.belongsTo(UserModel, {
     foreignKey: 'userID',
 })
 
-PackageModel.belongsToMany(ProductModel, { through: 'Orders' })
-ProductModel.belongsToMany(PackageModel, { through: 'Orders' })
+PackageModel.belongsToMany(ProductModel, { through: OrderModel })
+ProductModel.belongsToMany(PackageModel, { through: OrderModel })
 
 
-export { UserModel, MessageModel, ProductModel, PackageModel }
+export { UserModel, MessageModel, ProductModel, PackageModel, OrderModel}
 
 /* db.sync({ force : true }) */
 

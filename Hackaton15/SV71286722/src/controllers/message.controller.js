@@ -1,10 +1,10 @@
 import { MessageModel } from "../models/index.js"
 
 export class MessageController{
-    static async getAll(req, res){
+    static async getMessages(req, res){
         const messages = await MessageModel.getMessages()
         if(!messages){
-            return res.json({ message : "empty" })
+            return res.json({ message : "No hay mensajes" })
         }
         res.json(messages)
     }

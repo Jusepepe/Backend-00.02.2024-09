@@ -7,14 +7,25 @@ export class PackageModel extends Model {
         return packages 
     }
 
+    static async getPackagebyID(id){
+        const packages = await PackageModel.findByPk(id)
+        return packages 
+    }
+
     static async createPackage( input ){
-        const packageCreated = await PackageModel.create( input )
+        const packageCreated = await PackageModel.create({
+            ubicación: input.ubicacion,
+            estado: input.estado,
+            userID: input.id,
+        })
         return packageCreated
     }
 
     static async updatePackage(id,  input ){
-        const packageUpdated = await PackageModel.update(
-             input ,
+        const packageUpdated = await PackageModel.update({
+            ubicación: input.ubicacion,
+            estado: input.estado
+            },
             {
                 where: { id }
             }
@@ -23,7 +34,13 @@ export class PackageModel extends Model {
     }
 
     static async deletePackage(id){
-        const packageDeleted = await PackageModel.destroy({where: {id}})
+        const packageDeleted = await PackageModel.update({
+            estado: "Eliminado"
+            },
+            {
+                where: { id }
+            }
+        )
         return packageDeleted
     }
 }

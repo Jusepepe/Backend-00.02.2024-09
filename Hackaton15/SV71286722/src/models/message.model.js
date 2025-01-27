@@ -9,7 +9,7 @@ export class MessageModel extends Model {
     }
 
     static async createMessage(input){
-        const messageCreated = await MessageModel.create( input )
+        const messageCreated = await MessageModel.create({ message: input.message })
         return messageCreated
     }
 

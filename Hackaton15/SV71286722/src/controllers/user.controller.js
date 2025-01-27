@@ -66,24 +66,10 @@ export class UserController{
         if(!user){
             return res.json({ message : "Usuario no econtrado" })
         }
-        const messages = user.getPackages()
-        if(!messages){
+        const packages = user.getPackages()
+        if(!packages){
             return res.json({ message : "No tiene paquetes"})
         }
-        res.json(messages)
+        res.json(packages)
     }
 }
-
-/* const req = {
-    body:{
-        userData:{ nombre : 'Camilo', 
-            apellido : 'Montemayor', correo: 'asd17@asd.com', contraseña:'123'},
-        messageData:{
-            message: "Hola 17"
-        }
-    }
-}
-
-const res = {}
-
-console.log(await UserController.createUserAndMessage(req, res)) */
