@@ -25,8 +25,8 @@ export class ProductModel extends Model {
         return product
     }
 
-    static async createProduct(){
-        const product = await ProductModel.create();
+    static async createProduct(input){
+        const product = await ProductModel.create(input);
         return product
     }
 

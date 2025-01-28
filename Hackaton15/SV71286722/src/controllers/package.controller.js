@@ -3,11 +3,11 @@ import { PackageModel, ProductModel } from "../models/index.js";
 export class PackageController{
 
     static async getPackages(req, res){
-        const packages = await PackageModel.getPackages()
-        if(!packages){
+        const carts = await PackageModel.getPackages()
+        if(!carts){
             return res.json({ message : "No hay paquetes" })
         }
-        res.json(packages)
+        res.json(carts)
     }
 
     static async updatePackage(req, res){
@@ -22,11 +22,11 @@ export class PackageController{
 
     static async getPackageProducts(req, res){
         const id = req.params.id
-        const package = await PackageModel.getPackages(id)
-        if(!package){
+        const cart = await PackageModel.getPackagebyID(id)
+        if(!cart){
             return res.json({ message : "No existe el paquete" })
         }
-        const products = await package.getProducts()
+        const products = await cart.getProducts()
         if(!products){
             return res.json({ message : "Paquete sin productos" })
         }
@@ -44,19 +44,19 @@ export class PackageController{
 
     static async createPackage(req, res){
         const input = req.body
-        const package = await PackageModel.createPackage(input)
-        if(!package){
+        const cart = await PackageModel.createPackage(input)
+        if(!cart){
             return res.json({ message : "No se pudo crear el paquete " }) 
         }
-        res.json(package)
+        res.json(cart)
     }
 
     static async addProduct(req, res){
         const PackageId = req.params.id
         const ProductID = req.params.product
         const quantity = req.params.quantity
-        const package = await PackageModel.getPackagebyID(PackageId)
-        if(!package){
+        const cart = await PackageModel.getPackagebyID(PackageId)
+        if(!cart){
             return res.json({ message: "No se encontró el paquete"})
         }
         const product = await ProductModel.getProductbyID(ProductID)
@@ -66,24 +66,25 @@ export class PackageController{
         if(product.stock < quantity){
             return res.json({ message: "No hay suficiente stock"})
         }
-        await package.addProduct(product, { through : { quantity } } )
+        await cart.addProduct(product, { through : { quantity } } )
         await product.decrement({ stock : quantity })
         res.json({ message: "Se añadió el producto", product })
     }
 
     static async removeProduct(req, res){
+        //Arreglar forma de remover productos
         const PackageId = req.params.id
         const ProductID = req.params.product
         const quantity = req.params.quantity
-        const package = await PackageModel.getPackagebyID(PackageId)
-        if(!package){
+        const cart = await PackageModel.getPackagebyID(PackageId)
+        if(!cart){
             return res.json({ message: "No se encontró el paquete"})
         }
         const product = await ProductModel.getProductbyID(ProductID)
         if(!product){
             return res.json({ message: "No se encontró el producto"})
         }
-        await package.removeProduct(product)
+        await cart.removeProduct(product)
         await product.increment({ stock : quantity })
         res.json({ message: "Se removió el producto", product })
     }

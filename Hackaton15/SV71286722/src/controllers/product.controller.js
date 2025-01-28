@@ -46,4 +46,6 @@ export class ProductController{
         }
         res.json(product)
     }
+
+    //Agregar forma de reponer productos
 }

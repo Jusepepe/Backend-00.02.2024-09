@@ -3,26 +3,26 @@ import { sequelize as database } from "../config/dbconfig.js";
 
 export class PackageModel extends Model {
     static async getPackages(){
-        const packages = await PackageModel.findAll()
-        return packages 
+        const carts = await PackageModel.findAll()
+        return carts 
     }
 
     static async getPackagebyID(id){
-        const packages = await PackageModel.findByPk(id)
-        return packages 
+        const carts = await PackageModel.findByPk(id)
+        return carts 
     }
 
     static async createPackage( input ){
-        const packageCreated = await PackageModel.create({
+        const cartCreated = await PackageModel.create({
             ubicación: input.ubicacion,
             estado: input.estado,
-            userID: input.id,
+            userID: input.userID,
         })
-        return packageCreated
+        return cartCreated
     }
 
     static async updatePackage(id,  input ){
-        const packageUpdated = await PackageModel.update({
+        const cartUpdated = await PackageModel.update({
             ubicación: input.ubicacion,
             estado: input.estado
             },
@@ -30,18 +30,18 @@ export class PackageModel extends Model {
                 where: { id }
             }
         )
-        return packageUpdated
+        return cartUpdated
     }
 
     static async deletePackage(id){
-        const packageDeleted = await PackageModel.update({
+        const cartDeleted = await PackageModel.update({
             estado: "Eliminado"
             },
             {
                 where: { id }
             }
         )
-        return packageDeleted
+        return cartDeleted
     }
 }
 

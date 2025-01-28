@@ -4,6 +4,7 @@ import { messageRoute } from "../routes/message.route.js";
 import { userRoute } from "../routes/user.route.js";
 import { packageRoute } from "../routes/package.route.js";
 import { productRoute } from "../routes/product.route.js";
+import cookieParser from "cookie-parser";
 
 export class Server{
     constructor(){
@@ -15,6 +16,7 @@ export class Server{
 
     middlewares(){
         this.app.use(express.json())
+        this.app.use(cookieParser())
     }
 
     routes(){

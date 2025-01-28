@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize as database } from "../config/dbconfig.js";
+import bcrypt from "bcrypt"
 
 export class UserModel extends Model {
     static async getUsers(){
@@ -8,13 +9,35 @@ export class UserModel extends Model {
     }
 
     static async createUser( input ){
-        const userCreated = await UserModel.create( input )
+        const { contraseña, ...data } = input
+        const hashedPassword = await bcrypt.hash(contraseña, 10)
+        const userCreated = await UserModel.create({
+            ...data,
+            contraseña: hashedPassword
+        })
         return userCreated
+    }
+
+    static async getUserbyEmail(correo){
+        const user = await UserModel.findOne({ where: { correo: correo } })
+        return user
+    }
+
+    static async userLogin(correo, contraseña){
+        const user = await UserModel.getUserbyEmail(correo)
+        if(!user) return null
+        const isValid = await bcrypt.compare(contraseña, user.contraseña)
+        if(!isValid) return { message: "Contraseña Inválida" }
+        const { contraseña: _, ...publicUser } = user.dataValues
+        return publicUser
     }
 
     static async updateUser(id, input){
         const userUpdate = await UserModel.update(
-            input,
+            {
+                nombre: input.nombre,
+                apellido: input.apellido
+            },
             {
                 where: {id}
             }

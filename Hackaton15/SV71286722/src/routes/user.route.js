@@ -8,8 +8,10 @@ userRoute.get('/', UserController.getUsers)
 userRoute.get('/:id/messages', UserController.getUserMessages)
 userRoute.get('/:id/packages', UserController.getUserPackages)
 
-userRoute.post('/', UserController.createUser)
+userRoute.post('/register', UserController.registerUser)
+userRoute.post('/login', UserController.login)
+userRoute.post('/logout', UserController.logout)
 
-userRoute.patch('/', UserController.updateUser)
+userRoute.patch('/:id', UserController.updateUser)
 
-userRoute.delete('/', UserController.deleteUser)
+userRoute.delete('/:id', UserController.deleteUser)
