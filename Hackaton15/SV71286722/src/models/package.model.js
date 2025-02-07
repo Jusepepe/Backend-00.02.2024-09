@@ -7,9 +7,14 @@ export class PackageModel extends Model {
         return carts 
     }
 
+    static async getPackagesbyUser(userID){
+        const carts = await PackageModel.findAll({ where: { userID } })
+        return carts
+    }
+
     static async getPackagebyID(id){
-        const carts = await PackageModel.findByPk(id)
-        return carts 
+        const cart = await PackageModel.findByPk(id)
+        return cart
     }
 
     static async createPackage( input ){
@@ -48,10 +53,12 @@ export class PackageModel extends Model {
 PackageModel.init(
     {
         ubicación: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            defaultValue: "Tienda"
         },
         estado: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            defaultValue: "Procesando"
         }
     },
     {

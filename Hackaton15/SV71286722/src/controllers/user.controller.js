@@ -9,7 +9,8 @@ export class UserController{
         if(!user){
             return res.json({ message: "Usuario no encontrado" })
         }
-        res.json(user)
+        const { contraseña: _, ...publicUser } = user.dataValues
+        res.json(publicUser)
     }
 
     static async getUsers(req, res){
@@ -21,12 +22,12 @@ export class UserController{
     }
 
     static async getUserMessages(req, res){
-        const id = req.params.id
+        const id = req.session.user.id
         const user = await UserModel.getUserbyID(id)
         if(!user){
             return res.json({ message : "Usuario no econtrado" })
         }
-        const messages = user.getMessages()
+        const messages = await user.getMessages()
         if(!messages.length){
             return res.json({ message : "No tiene mensajes"})
         }
@@ -34,12 +35,12 @@ export class UserController{
     }
 
     static async getUserPackages(req, res){
-        const id = req.params.id
+        const id = req.session.user.id
         const user = await UserModel.getUserbyID(id)
         if(!user){
             return res.json({ message : "Usuario no econtrado" })
         }
-        const packages = user.getPackages()
+        const packages = await user.getPackages()
         if(!packages.length){
             return res.json({ message : "No tiene paquetes"})
         }
@@ -78,7 +79,7 @@ export class UserController{
         const { correo, contraseña } = req.body
         const result = await UserModel.userLogin(correo, contraseña)
         if(!result) return res.json({ message: "No existe el usuario"})
-        const token = jwt.sign({id: result.id}, 
+        const token = jwt.sign({id: result.id, correo: result.correo}, 
             "123456789",
             {
                 algorithm: "HS256",
@@ -95,8 +96,13 @@ export class UserController{
     }
 
     static async logout(req, res){
-        res.clearCookie('access_token')
-        .json({ message: "Usuario deslogeado"})
+        try{
+            const correo = req.session.user.correo
+            res.clearCookie('access_token')
+            .json({ message: `Usuario deslogeado: ${correo}`})
+        }catch(e){
+            res.json({ message : e.message})
+        }
     }
 
 }

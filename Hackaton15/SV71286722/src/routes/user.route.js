@@ -1,12 +1,13 @@
 import { Router } from "express"
 import { UserController } from "../controllers/user.controller.js"
+import { verifySignIn } from "../middlewares/verifySignIn.js"
 
 export const userRoute = Router()
 
-userRoute.get('/:id', UserController.getUserbyID)
+userRoute.get('/find/:id', UserController.getUserbyID)
 userRoute.get('/', UserController.getUsers)
-userRoute.get('/:id/messages', UserController.getUserMessages)
-userRoute.get('/:id/packages', UserController.getUserPackages)
+userRoute.get('/messages', verifySignIn, UserController.getUserMessages)
+userRoute.get('/packages', verifySignIn, UserController.getUserPackages)
 
 userRoute.post('/register', UserController.registerUser)
 userRoute.post('/login', UserController.login)

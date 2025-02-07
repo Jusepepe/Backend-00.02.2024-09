@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 
 export class UserModel extends Model {
     static async getUsers(){
-        const users = await UserModel.findAll()
+        const users = await UserModel.findAll({attributes: {exclude:'contraseña'}})
         return users
     }
 

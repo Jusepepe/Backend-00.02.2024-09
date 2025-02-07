@@ -1,3 +1,4 @@
+import { and } from "sequelize";
 import { PackageModel, ProductModel } from "../models/index.js";
 
 export class PackageController{
@@ -6,6 +7,15 @@ export class PackageController{
         const carts = await PackageModel.getPackages()
         if(!carts){
             return res.json({ message : "No hay paquetes" })
+        }
+        res.json(carts)
+    }
+
+    static async getPackagesbyUser(req, res){
+        const userID = req.session.user.id
+        const carts = await PackageModel.getPackagesbyUser(userID)
+        if(!carts.lenght){
+            return res.json({ message : "El usuario no tiene paquetes"} )
         }
         res.json(carts)
     }
@@ -27,7 +37,7 @@ export class PackageController{
             return res.json({ message : "No existe el paquete" })
         }
         const products = await cart.getProducts()
-        if(!products){
+        if(!products.length){
             return res.json({ message : "Paquete sin productos" })
         }
         res.json(products)
@@ -43,7 +53,9 @@ export class PackageController{
     }
 
     static async createPackage(req, res){
-        const input = req.body
+        const { ubicación, estado } = req.body
+        const userID = req.session.user.id
+        const input = { ubicación, estado, userID }
         const cart = await PackageModel.createPackage(input)
         if(!cart){
             return res.json({ message : "No se pudo crear el paquete " }) 
@@ -55,8 +67,9 @@ export class PackageController{
         const PackageId = req.params.id
         const ProductID = req.params.product
         const quantity = req.params.quantity
+        const userID = req.session.user.id
         const cart = await PackageModel.getPackagebyID(PackageId)
-        if(!cart){
+        if(!cart || (userID !== cart.userID)){
             return res.json({ message: "No se encontró el paquete"})
         }
         const product = await ProductModel.getProductbyID(ProductID)
@@ -75,17 +88,21 @@ export class PackageController{
         //Arreglar forma de remover productos
         const PackageId = req.params.id
         const ProductID = req.params.product
-        const quantity = req.params.quantity
         const cart = await PackageModel.getPackagebyID(PackageId)
         if(!cart){
             return res.json({ message: "No se encontró el paquete"})
         }
-        const product = await ProductModel.getProductbyID(ProductID)
+        const products = await cart.getProducts({ where: {id : ProductID} })
+        const product = products[0]
+        console.log(product)
         if(!product){
             return res.json({ message: "No se encontró el producto"})
         }
+        const isUpdated = await ProductModel.incrementProduct(product.id, product.Order.quantity)
+        if(!isUpdated){
+            return res.json({ message: "No se reestableció el producto"})
+        }
         await cart.removeProduct(product)
-        await product.increment({ stock : quantity })
-        res.json({ message: "Se removió el producto", product })
+        res.json({ message: "Se removió el producto"})
     }
 }

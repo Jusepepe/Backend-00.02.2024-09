@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, where } from "sequelize";
 import { sequelize as database } from "../config/dbconfig.js";
 
 export class ProductModel extends Model {
@@ -43,6 +43,16 @@ export class ProductModel extends Model {
     static async deleteProduct(id){
         const productDeleted = await ProductModel.destroy({ where : { id } })
         return productDeleted
+    }
+
+    static async incrementProduct(id, quantity){
+        const isUpdated = await ProductModel.update({
+            stock: this.sequelize.literal(`stock +${quantity}`)
+        },
+        {
+            where: { id }
+        })
+        return isUpdated
     }
 }
 

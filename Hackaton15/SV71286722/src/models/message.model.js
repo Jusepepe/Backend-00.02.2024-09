@@ -8,8 +8,15 @@ export class MessageModel extends Model {
         return messages 
     }
 
+    static async getMessagesbyUser(userID){
+        const messages = await MessageModel.findAll({where:{userID}})
+        return messages 
+    }
+
     static async createMessage(input){
-        const messageCreated = await MessageModel.create({ message: input.message, userID: input.userID })
+        const messageCreated = await MessageModel.create({
+            message: input.message,
+            userID: input.userID })
         return messageCreated
     }
 
@@ -19,14 +26,21 @@ export class MessageModel extends Model {
                 message: input.message
             } ,
             {
-                where: { id }
+                where: { 
+                    id,
+                    userID: input.userID
+                 }
             }
         )
         return messageUpdated
     }
 
-    static async deleteMessage(id){
-        const messageDeleted = await MessageModel.destroy({where: {id}})
+    static async deleteMessage(id, userID){
+        const messageDeleted = await MessageModel.destroy({where: {
+                id,
+                userID
+            }
+        })
         return messageDeleted
     }
 }
