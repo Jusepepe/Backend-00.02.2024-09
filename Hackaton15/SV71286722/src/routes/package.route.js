@@ -8,7 +8,7 @@ packageRoute.get('/', PackageController.getPackages)
 packageRoute.get('/:id/products', verifySignIn, PackageController.getPackageProducts)
 packageRoute.get('/myPackages', verifySignIn, PackageController.getPackagesbyUser)
 
-packageRoute.post('/', PackageController.createPackage)
+packageRoute.post('/', verifySignIn, PackageController.createPackage)
 
 packageRoute.patch('/:id', PackageController.updatePackage)
 packageRoute.patch('/:id/add/:product/:quantity', PackageController.addProduct)

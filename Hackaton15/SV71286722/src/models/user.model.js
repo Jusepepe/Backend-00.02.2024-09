@@ -18,8 +18,18 @@ export class UserModel extends Model {
         return userCreated
     }
 
+    static async createOauthUser( input ){
+        const { correo, oauthID, authMethod } = input 
+        const userCreated = await UserModel.create({
+            correo,
+            oauthID,
+            authMethod
+        })
+        return userCreated
+    }
+
     static async getUserbyEmail(correo){
-        const user = await UserModel.findOne({ where: { correo: correo } })
+        const user = await UserModel.findOne({ where: { correo } })
         return user
     }
 
@@ -81,6 +91,12 @@ UserModel.init(
         },
         estadoCuenta:{
             type: DataTypes.BOOLEAN
+        },
+        authMethod:{
+            type: DataTypes.STRING
+        },
+        oauthID:{
+            type: DataTypes.STRING
         }
     },
     {

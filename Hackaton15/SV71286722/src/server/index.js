@@ -6,6 +6,7 @@ import { packageRoute } from "../routes/package.route.js";
 import { productRoute } from "../routes/product.route.js";
 import cookieParser from "cookie-parser";
 import { verifyToken } from "../middlewares/verifyToken.js";
+import { authRoute } from "../routes/oauth.route.js"
 
 export class Server{
     constructor(){
@@ -30,6 +31,7 @@ export class Server{
         this.app.use('/message', messageRoute)
         this.app.use('/package', packageRoute)
         this.app.use('/product', productRoute)
+        this.app.use('/oauth', authRoute)
     }
 
     listen(){
